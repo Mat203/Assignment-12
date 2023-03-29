@@ -60,3 +60,66 @@ public class LinkedList
         return current?.Pair;
     }
 }
+
+public class StringsDictionary
+{
+    private const int InitialSize = 10;
+    private int count;
+    private LinkedList[] buckets = new LinkedList[InitialSize];
+
+    public int GetHashCode(string key)
+    {
+        int hash = 0;
+        int d = 1;
+        foreach (char c in key)
+        {
+            hash += (int) (c+Math.Pow(d,2));
+            d++;
+            
+        }
+
+        return hash;
+    }
+
+    public string GetValue(string key)
+    {
+        int bucketIndex = Index(key);
+        if (buckets[bucketIndex] != null)
+        {
+            var kvp = buckets[bucketIndex].GetItemWithKey(key);
+            if (kvp != null)
+            {
+                return kvp.Value;
+            }
+        }
+
+        return null;
+    }
+
+    public void Add(string key, string value)
+    {
+        int bucketIndex = Index(key);
+        if (buckets[bucketIndex] == null)
+        {
+            buckets[bucketIndex] = new LinkedList();
+            
+        }
+        buckets[bucketIndex].Add(new KeyValuePair(key,value));
+    }
+
+    public void Remove(string key)
+    {
+        int bucketIndex = Index(key);
+        if (buckets[bucketIndex] != null)
+        {
+            buckets[bucketIndex].RemoveByKey(key);
+        }
+    }
+
+    int Index(string key)
+    {
+        int hash = GetHashCode(key);
+        int bucketIndex = hash % InitialSize;
+        return bucketIndex;
+    }
+}
