@@ -47,4 +47,16 @@ public class LinkedList
             else previous.Next = current.Next;
         }
     }
+
+    public KeyValuePair? GetItemWithKey(string key)
+    {
+        LinkedListNode current = _first;
+
+        while (current != null && current.Pair.Key != key)
+        {
+            current = current.Next;
+        }
+
+        return current?.Pair;
+    }
 }
