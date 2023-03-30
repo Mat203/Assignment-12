@@ -50,7 +50,7 @@ public class LinkedListNode
 
 public class LinkedList
 {
-    private LinkedListNode _first;
+    public LinkedListNode _first;
 
     public void Add(KeyValuePair pair)
     {
@@ -90,6 +90,7 @@ public class LinkedList
 public class StringsDictionary
 {
     private const int InitialSize = 10;
+    int newSize = 10;
     private int count;
     private LinkedList[] buckets = new LinkedList[InitialSize];
 
@@ -131,6 +132,11 @@ public class StringsDictionary
             
         }
         buckets[bucketIndex].Add(new KeyValuePair(key,value));
+        double loadFactor = LoadFactor();
+        if (loadFactor > 0.8)
+        {
+            Resize();
+        }
     }
 
     public void Remove(string key)
@@ -147,5 +153,45 @@ public class StringsDictionary
         int hash = GetHashCode(key);
         int bucketIndex = hash % InitialSize;
         return bucketIndex;
+    }
+    public double LoadFactor()
+    {
+        double count = 0;
+        foreach (var list in buckets)
+        {
+            if (list != null)
+            {
+                count += 1;
+            }
+        }
+        return count / newSize;
+    }
+    private void Resize()
+    {
+        newSize = newSize * 2;
+        var newBuckets = new LinkedList[newSize];
+
+        foreach (var linkedlist in buckets)
+        {
+            if (linkedlist != null)
+            {
+                var currentNode = linkedlist._first;
+                while (currentNode != null)
+                {
+                    var pair = currentNode.Pair;
+                    int bucketIndex = GetHashCode(pair.Key) % newSize;
+
+                    if (newBuckets[bucketIndex] == null)
+                    {
+                        newBuckets[bucketIndex] = new LinkedList();
+                    }
+
+                    newBuckets[bucketIndex].Add(pair);
+                    currentNode = currentNode.Next;
+                }
+            }
+        }
+
+        buckets = newBuckets;
     }
 }
