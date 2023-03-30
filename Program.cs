@@ -1,4 +1,30 @@
-﻿public class KeyValuePair
+﻿static void Main()
+{
+    StringsDictionary dictionary = new StringsDictionary();
+    foreach (var line in File.ReadAllLines("dict.txt"))
+    {
+        string[] elements = line.Split("; ");
+        string key = elements[0];
+        string value = String.Join("; ", elements[1..]);
+        dictionary.Add(key, value);
+    }
+    while (true)
+    {
+        Console.Write("Write a word or /break to stop: ");
+        string user_key = Console.ReadLine();
+        if (user_key == "/break")
+        {
+            break;
+        }
+        string user_value = dictionary.GetValue(user_key);
+        Console.WriteLine(user_value);
+    }
+}
+
+Main();
+
+
+public class KeyValuePair
 {
     public string Key { get; }
     public string Value { get; }
